@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<robot name="my_diff_drive_robot">
+
+  <!-- ===== 材质颜色 (亮色, RViz 深色背景下清晰可见) ===== -->
+  <material name="orange">
+    <color rgba="1.0 0.5 0.0 1.0"/>
+  </material>
+  <material name="dark_grey">
+    <color rgba="0.5 0.5 0.5 1.0"/>
+  </material>
+  <material name="cyan">
+    <color rgba="0.0 0.8 0.8 1.0"/>
+  </material>
+  <material name="light_grey">
+    <color rgba="0.8 0.8 0.8 1.0"/>
+  </material>
+
+  <!-- ===== 底盘 (车体) ===== -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.3 0.15"/>
+      </geometry>
+      <material name="orange"/>
+    </visual>
+    <!-- 碰撞体积 (用于 Gazebo 物理) -->
+    <collision>
+      <geometry>
+        <box size="0.4 0.3 0.15"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.05" ixy="0.0" ixz="0.0" iyy="0.05" iyz="0.0" izz="0.08"/>
+    </inertial>
+  </link>
+
+  <!-- ===== 左轮 ===== -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0.0 0.18 -0.05" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+  <link name="left_wheel">
+    <visual>
+      <origin rpy="1.5708 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.04"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.0003" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <!-- ===== 右轮 ===== -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0.0 -0.18 -0.05" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0.0 1.0 0.0"/>
+  </joint>
+  <link name="right_wheel">
+    <visual>
+      <origin rpy="1.5708 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.04"/>
+      </geometry>
+      <material name="dark_grey"/>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 0.0 0.0"/>
+      <geometry>
+        <cylinder radius="0.06" length="0.04"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.3"/>
+      <inertia ixx="0.0003" ixy="0.0" ixz="0.0" iyy="0.0005" iyz="0.0" izz="0.0003"/>
+    </inertial>
+  </link>
+
+  <!-- ===== 万向轮 (前方支撑) ===== -->
+  <joint name="caster_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="caster_wheel"/>
+    <origin xyz="0.16 0.0 -0.09" rpy="0.0 0.0 0.0"/>
+  </joint>
+  <link name="caster_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+      <material name="light_grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <!-- ===== 激光雷达 ===== -->
+  <joint name="lidar_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="lidar_link"/>
+    <origin xyz="0.1 0.0 0.12" rpy="0.0 0.0 0.0"/>
+  </joint>
+  <link name="lidar_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.03"/>
+      </geometry>
+      <material name="cyan"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.03"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0001" ixy="0.0" ixz="0.0" iyy="0.0001" iyz="0.0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <!-- ============================================ -->
+  <!--  Gazebo 插件配置                              -->
+  <!-- ============================================ -->
+
+  <!-- 差速驱动插件: 根据 /cmd_vel 控制左右轮, 发布 /odom -->
+  <gazebo>
+    <plugin name="diff_drive" filename="libgazebo_ros_diff_drive.so">
+      <!-- 关节名 -->
+      <left_joint>left_wheel_joint</left_joint>
+      <right_joint>right_wheel_joint</right_joint>
+
+      <!-- 轮距 (左右轮 y 间距) 和 轮径 -->
+      <wheel_separation>0.36</wheel_separation>
+      <wheel_diameter>0.12</wheel_diameter>
+
+      <!-- 动力限制 -->
+      <max_wheel_torque>20.0</max_wheel_torque>
+      <max_wheel_acceleration>1.0</max_wheel_acceleration>
+
+      <!-- 话题与坐标系 -->
+      <command_topic>cmd_vel</command_topic>
+      <odometry_topic>odom</odometry_topic>
+      <odometry_frame>odom</odometry_frame>
+      <robot_base_frame>base_link</robot_base_frame>
+
+      <!-- 自动发布 odom→base_link 的 TF -->
+      <publish_odom>true</publish_odom>
+      <publish_tf>true</publish_tf>
+      <publish_wheel_tf>false</publish_wheel_tf>
+
+      <update_rate>50.0</update_rate>
+    </plugin>
+  </gazebo>
+
+  <!-- 万向轮: 降低摩擦，模拟自由滚动 -->
+  <gazebo reference="caster_wheel">
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
+    <kp>1000000.0</kp>
+    <kd>1.0</kd>
+  </gazebo>
+
+</robot>
