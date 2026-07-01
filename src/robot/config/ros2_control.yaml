@@ -8,7 +8,6 @@ controller_manager:
     diff_drive_controller:
       type: diff_drive_controller/DiffDriveController
 
-    # 👇 重点检查这一行的 type！必须完全一致！
     imu_sensor_broadcaster:
       type: imu_sensor_broadcaster/IMUSensorBroadcaster
 
@@ -24,7 +23,6 @@ diff_drive_controller:
     cmd_vel_timeout: 0.5
     odom_frame_id: odom
     base_frame_id: base_link
-    cmd_vel_topic: cmd_vel
     enable_odom: true
     publish_odom_to_tf: true
 

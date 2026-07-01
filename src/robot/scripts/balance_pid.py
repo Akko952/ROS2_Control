@@ -8,13 +8,11 @@ import math
 class BalancePIDNode(Node):
     def __init__(self):
         super().__init__('balance_pid_node')
-        # PID 参数
-        self.kp = 12.0
+        self.kp = 18
         self.kd = 0.8
         self.prev_error = 0.0
 
-        self.publisher_ = self.create_publisher(Twist, '/cmd_vel', 10)
-        # 👇 这里改成了刚才 ros2 topic list 里查到的真实话题名
+        self.publisher_ = self.create_publisher(Twist, '/diff_drive_controller/cmd_vel', 10)
         self.subscription = self.create_subscription(Imu, '/imu_sensor_broadcaster/imu', self.imu_callback, 10)
 
     def imu_callback(self, msg):
@@ -25,16 +23,22 @@ class BalancePIDNode(Node):
         else:
             pitch = math.asin(sinp)
         
-        error = -pitch  
+        error = pitch  
         derivative = error - self.prev_error
         self.prev_error = error
         
         correction = self.kp * error + self.kd * derivative
-        if correction > 0.3: correction = 0.3
-        if correction < -0.3: correction = -0.3
+        
+        if correction > 0.8: correction = 0.8
+        if correction < -0.8: correction = -0.8
+
+        # 👇 如果你想看数据，可以取消下面这行的注释
+        self.get_logger().info(f'Pitch: {pitch:.3f}, Correction: {correction:.3f}')
 
         twist = Twist()
-        twist.linear.x = correction
+        # ===== 👇 终极关键：加上负号，让电机反向输出 👇 =====
+        twist.linear.x = correction  
+        # =================================================
         self.publisher_.publish(twist)
 
 def main(args=None):
