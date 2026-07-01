@@ -1,6 +1,4 @@
 # gazebo.launch.py
-# One-click: gzserver + robot + ros2_control
-
 import launch
 import launch_ros
 from launch.actions import ExecuteProcess, RegisterEventHandler
@@ -8,7 +6,6 @@ from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
-
 
 def generate_launch_description():
     pkg = FindPackageShare('robot')
@@ -48,6 +45,17 @@ def generate_launch_description():
         output='screen'
     )
 
+    imu_sensor_broadcaster = Node(
+        package='controller_manager',
+        executable='spawner',
+        arguments=[
+            'imu_sensor_broadcaster',
+            '--controller-manager', '/controller_manager',
+            '--controller-manager-timeout', '180',
+        ],
+        output='screen'
+    )
+
     return launch.LaunchDescription([
         ExecuteProcess(
             cmd=['gzserver', '--verbose',
@@ -71,6 +79,7 @@ def generate_launch_description():
                 on_exit=[
                     joint_state_broadcaster,
                     diff_drive_controller,
+                    imu_sensor_broadcaster,
                 ],
             )
         ),

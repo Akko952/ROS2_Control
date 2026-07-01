@@ -2,13 +2,16 @@ controller_manager:
   ros__parameters:
     update_rate: 100
 
-    diff_drive_controller:
-      type: diff_drive_controller/DiffDriveController
-
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-# Diff Drive Controller parameters
+    diff_drive_controller:
+      type: diff_drive_controller/DiffDriveController
+
+    # 👇 重点检查这一行的 type！必须完全一致！
+    imu_sensor_broadcaster:
+      type: imu_sensor_broadcaster/IMUSensorBroadcaster
+
 diff_drive_controller:
   ros__parameters:
     left_wheel_names: ["LeftWheel_Joint"]
@@ -16,11 +19,16 @@ diff_drive_controller:
     publish_rate: 50.0
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
-    wheel_separation: 0.077   # TODO: measure actual value
-    wheel_radius: 0.03         # TODO: measure actual value
+    wheel_separation: 0.077
+    wheel_radius: 0.03
     cmd_vel_timeout: 0.5
     odom_frame_id: odom
     base_frame_id: base_link
     cmd_vel_topic: cmd_vel
     enable_odom: true
     publish_odom_to_tf: true
+
+imu_sensor_broadcaster:
+  ros__parameters:
+    sensor_name: imu_sensor
+    frame_id: base_link
