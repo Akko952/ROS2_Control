@@ -31,11 +31,13 @@ ament_target_dependencies(subscriber rclcpp std_msgs)
 add_executable(sensor_publisher src/sensor_publisher.cpp)
 ament_target_dependencies(sensor_publisher rclcpp std_msgs)
 # 链接自定义消息的头文件
-rosidl_target_interfaces(sensor_publisher ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
 
 add_executable(sensor_subscriber src/sensor_subscriber.cpp)
 ament_target_dependencies(sensor_subscriber rclcpp std_msgs)
-rosidl_target_interfaces(sensor_subscriber ${PROJECT_NAME} "rosidl_typesupport_cpp")
+rosidl_get_typesupport_target(cpp_typesupport_target ${PROJECT_NAME} "rosidl_typesupport_cpp")
+target_link_libraries(sensor_publisher ${cpp_typesupport_target})
+target_link_libraries(sensor_subscriber ${cpp_typesupport_target})
 
 # ===== 第四步: TF2 广播节点 =====
 add_executable(tf_broadcaster src/tf_broadcaster.cpp)
