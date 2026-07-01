@@ -50,7 +50,7 @@ install(
 
 # ===== Install resource directories =====
 install(
-  DIRECTORY urdf meshes launch config worlds
+  DIRECTORY urdf meshes launch config worlds rviz
   DESTINATION share/${PROJECT_NAME}
 )
 
