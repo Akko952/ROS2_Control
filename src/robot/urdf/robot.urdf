@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="robot">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="4.0725E-05 -0.00037315 0.01797"
+        rpy="0 0 0" />
+      <mass
+        value="0.36868" />
+      <inertia
+        ixx="0.00038326"
+        ixy="7.3493E-09"
+        ixz="-1.5736E-08"
+        iyy="7.266E-05"
+        iyz="1.2589E-08"
+        izz="0.00044409" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.75294 0.75294 0.75294 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="RightWheel_Link">
+    <inertial>
+      <origin
+        xyz="2.9117E-05 0.006209 -0.00044943"
+        rpy="0 0 0" />
+      <mass
+        value="0.079032" />
+      <inertia
+        ixx="2.8184E-05"
+        ixy="7.7355E-11"
+        ixz="2.0174E-10"
+        iyy="4.608E-05"
+        iyz="2.7186E-10"
+        izz="2.8217E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/RightWheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/RightWheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="RightWheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0 -0.101 -0.02"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="RightWheel_Link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      effort="10"
+      velocity="5.0" />
+  </joint>
+  <link
+    name="LeftWheel_Link">
+    <inertial>
+      <origin
+        xyz="6.8681E-06 -0.006209 -0.00045032"
+        rpy="0 0 0" />
+      <mass
+        value="0.079032" />
+      <inertia
+        ixx="2.8184E-05"
+        ixy="9.8818E-11"
+        ixz="-2.8396E-09"
+        iyy="4.608E-05"
+        iyz="-2.6481E-10"
+        izz="2.8217E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/LeftWheel_Link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.29804 0.29804 0.29804 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://robot/meshes/LeftWheel_Link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="LeftWheel_Joint"
+    type="continuous">
+    <origin
+      xyz="0 0.101 -0.02"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="LeftWheel_Link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      effort="10"
+      velocity="5.0" />
+  </joint>
+
+  <!-- 新增 ros2_control 插件 -->
+  <gazebo>
+    <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+      <parameters>$(find robot)/config/ros2_control.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+
+</robot>
